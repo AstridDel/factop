@@ -20,7 +20,7 @@ use DateTimeInterface;
  *      }
  * },
  * attributes={
- *      "pagination_enabled"=true,
+ *      "pagination_enabled"=false,
  *      "pagination_items_per_page"=10,
  *      "order": {"sentAt":"desc"}
  * },
