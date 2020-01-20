@@ -2,6 +2,7 @@ import moment from "moment";
 import React, { useEffect, useState } from 'react';
 import Pagination from '../components/Pagination';
 import InvoicesAPI from '../services/invoicesAPI';
+import { Link } from "react-router-dom";
 
 /*gestion couleur des status*/
 const STATUS_CLASSES = {
@@ -92,7 +93,10 @@ const InvoicesPage = (props) => {
 
     return (
         <>
-            <h1>Liste des Factures</h1>
+            <div className="d-flex justify-content-between align-items-center">
+                <h1>Liste des Factures</h1>
+                <Link className="btn btn-primary" to="/invoices/new">Créer une facture</Link>
+            </div>
 
             <div className="form-group">
                 <input
@@ -135,7 +139,12 @@ const InvoicesPage = (props) => {
                                     {invoice.amount.toLocaleString()} €
                                 </td>
                                 <td>
-                                    <button className="btn btn-sm btn-primary mr-2">Editer</button>
+                                    <Link
+                                        to={"/invoices/" + invoice.id}
+                                        className="btn btn-sm btn-primary mr-2"
+                                    >
+                                        Editer
+                                        </Link>
                                     <button onClick={() => handleDelete(invoice.id)}
                                         disabled={invoice.length > 0} className="btn btn-sm btn-danger">Supprimer</button>
                                 </td>

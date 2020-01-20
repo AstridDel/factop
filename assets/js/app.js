@@ -10,6 +10,9 @@ import HomePage from './pages/HomePage';
 import InvoicesPage from './pages/InvoicesPage';
 import LoginPage from './pages/LoginPage';
 import AuthAPI from './services/authAPI';
+import CustomerPage from './pages/CustomerPage';
+import InvoicePage from './pages/InvoicePage';
+import RegisterPage from './pages/RegisterPage';
 
 // Hashrouter est un component qui englobe l ensemble de l appli ! et permet de gerer les routes commençant par #
 // Switch permet de choisir un affichage selon l url
@@ -21,7 +24,6 @@ import AuthAPI from './services/authAPI';
 require('../css/app.css');
 
 AuthAPI.setup();
-
 
 const App = () => {
     const [isAuthenticated, setIsAuthenticated] = useState(
@@ -42,21 +44,14 @@ const App = () => {
 
                 <main className="container pt-5">
                     <Switch>
-                        <Route
-                            path="/login"
-                            component={LoginPage} />
+                        <Route path="/login" component={LoginPage} />
+                        <Route path="/register" component={RegisterPage} />
+                        <PrivateRoute path="/invoices/:id" component={InvoicePage} />
+                        <PrivateRoute path="/invoices" component={InvoicesPage} />
+                        <PrivateRoute path="/customers/:id" component={CustomerPage} />
+                        <PrivateRoute path="/customers" component={CustomersPage} />
 
-                        <PrivateRoute
-                            path="/invoices"
-                            component={InvoicesPage} />
-
-                        <PrivateRoute
-                            path="/customers"
-                            component={CustomersPage} />
-
-                        <Route
-                            path="/"
-                            component={HomePage} />
+                        <Route path="/" component={HomePage} />
                     </Switch>
                 </main>
             </HashRouter>
