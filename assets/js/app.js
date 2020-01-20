@@ -13,6 +13,8 @@ import AuthAPI from './services/authAPI';
 import CustomerPage from './pages/CustomerPage';
 import InvoicePage from './pages/InvoicePage';
 import RegisterPage from './pages/RegisterPage';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // Hashrouter est un component qui englobe l ensemble de l appli ! et permet de gerer les routes commençant par #
 // Switch permet de choisir un affichage selon l url
@@ -50,11 +52,11 @@ const App = () => {
                         <PrivateRoute path="/invoices" component={InvoicesPage} />
                         <PrivateRoute path="/customers/:id" component={CustomerPage} />
                         <PrivateRoute path="/customers" component={CustomersPage} />
-
                         <Route path="/" component={HomePage} />
                     </Switch>
                 </main>
             </HashRouter>
+            <ToastContainer position={toast.POSITION.BOTTOM_LEFT} />
         </AuthContext.Provider>
     );
 }

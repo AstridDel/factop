@@ -2,6 +2,8 @@ import React, { useEffect, useState } from 'react';
 import Pagination from '../components/Pagination';
 import CustomersAPI from "../services/customersAPI";
 import { Link } from 'react-router-dom';
+import { toast } from 'react-toastify';
+import TableLoader from '../components/loaders/TableLoader';
 
 
 const CustomersPage = (props) => {
@@ -9,14 +11,16 @@ const CustomersPage = (props) => {
     const [customers, setCustomers] = useState([]);
     const [currentPage, setCurrentPage] = useState([1]);
     const [search, setSearch] = useState("");
+    const [loading, setLoading] = useState(true);
 
     /* recuperation des customers: */
     const fetchCustomers = async () => {
         try {
             const data = await CustomersAPI.findAll()
             setCustomers(data)
+            setLoading(false)
         } catch (error) {
-            console.log(error.response)
+            toast.error("Erreur lors du chargement des clients")
         };
     }
 
@@ -34,8 +38,10 @@ const CustomersPage = (props) => {
 
         try {
             await CustomersAPI.delete(id)
+            toast.success("Le client a bien été supprimé")
         } catch (error) {
             setCustomers(originalCustomers);
+            toast.error("Erreur lors de la suppression du client")
         }
     };
 
@@ -102,32 +108,38 @@ const CustomersPage = (props) => {
                     </tr>
                 </thead>
 
-                <tbody>{/* transformer chq customer en tr */}
-                    {paginatedCustomers.map(customer => (
-                        <tr key={customer.id}>
-                            <td>{customer.id}</td>
-                            <td>
-                                <a href="#">{customer.firstName} {customer.lastName}</a>
-                            </td>
-                            <td>{customer.email}</td>
-                            <td>{customer.company}</td>
-                            <td className="text-center">
-                                <span className="badge badge-pill badge-dark">
-                                    {customer.invoices.length}
-                                </span>
-                            </td>
-                            <td className="text-center">{customer.totalAmount.toLocaleString()} €</td>
-                            <td>
-                                <button
-                                    onClick={() => handleDelete(customer.id)}
-                                    disabled={customer.invoices.length > 0} className="btn btn-sm btn-danger"
-                                >
-                                    Supprimer
+                {!loading && (
+                    <tbody>{/* transformer chq customer en tr */}
+                        {paginatedCustomers.map(customer => (
+                            <tr key={customer.id}>
+                                <td>{customer.id}</td>
+                                <td>
+                                    <Link to={"/customers/" + customer.id}>
+                                        {customer.firstName} {customer.lastName}
+                                    </Link>
+                                </td>
+                                <td>{customer.email}</td>
+                                <td>{customer.company}</td>
+                                <td className="text-center">
+                                    <span className="badge badge-pill badge-dark">
+                                        {customer.invoices.length}
+                                    </span>
+                                </td>
+                                <td className="text-center">{customer.totalAmount.toLocaleString()} €</td>
+                                <td>
+                                    <button
+                                        onClick={() => handleDelete(customer.id)}
+                                        disabled={customer.invoices.length > 0} className="btn btn-sm btn-danger"
+                                    >
+                                        Supprimer
                                 </button></td>
-                        </tr>
-                    ))}
-                </tbody>
+                            </tr>
+                        ))}
+                    </tbody>
+                )}
             </table>
+
+            {loading && (<TableLoader />)}
 
             <Pagination
                 currentPage={currentPage}

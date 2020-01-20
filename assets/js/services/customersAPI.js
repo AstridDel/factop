@@ -23,12 +23,11 @@ function update(id, customer) {
 }
 
 function create(customer) {
-    return axios
-        .post("http://localhost:8000/api/customers", customer)
+    return axios.post("http://localhost:8000/api/customers", customer)
 }
 
 
-/*objet av propriete findall*/
+/*objet av propriete */
 export default {
     findAll,
     find,

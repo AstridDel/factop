@@ -4,6 +4,8 @@ import Field from '../components/forms/Field';
 import Select from '../components/forms/Select';
 import CustomersAPI from "../services/customersAPI";
 import InvoicesAPI from '../services/invoicesAPI';
+import { toast } from 'react-toastify';
+import FormContentLoader from '../components/loaders/FormContentLoader';
 
 const InvoicePage = ({ history, match }) => {
 
@@ -22,15 +24,18 @@ const InvoicePage = ({ history, match }) => {
         customer: "",
         status: ""
     })
+    const [loading, setLoading] = useState(true);
 
     // Recuperation des donnees des customers
     const fetchCustomers = async () => {
         try {
             const data = await CustomersAPI.findAll()
             setCustomers(data)
+            setLoading(false)
 
             if (!invoice.customer) setInvoice({ ...invoice, customer: data[0].id })
         } catch (error) {
+            toast.error("Erreur lors du chargement des clients")
             history.replace("/invoices")
         }
     }
@@ -40,7 +45,9 @@ const InvoicePage = ({ history, match }) => {
         try {
             const { amount, status, customer } = await InvoicesAPI.find(id)
             setInvoice({ amount, status, customer: customer.id })
+            setLoading(false)
         } catch (error) {
+            toast.error("Erreur lors du chargement des factures")
             history.replace("/invoices")
         }
     }
@@ -72,8 +79,10 @@ const InvoicePage = ({ history, match }) => {
         try {
             if (editing) {
                 await InvoicesAPI.update(id, invoice)
+                toast.success("La facture a bien été modifiée")
             } else {
                 await InvoicesAPI.create(invoice)
+                toast.success("La facture a bien été créee")
                 history.replace("/invoices")
             }
         } catch ({ response }) {
@@ -86,6 +95,7 @@ const InvoicePage = ({ history, match }) => {
                         apiErrors[propertyPath] = message
                     })
                     setErrors(apiErrors)
+                    toast.error("Le formulaire contient des erreurs")
                 }
             }
         }
@@ -93,8 +103,12 @@ const InvoicePage = ({ history, match }) => {
 
     return (
         <>
-            {editing && <h1>Modification d'une facture</h1> || <h1>Création d'une facture</h1>}
-            <form onSubmit={handleSubmit}>
+            {(editing && <h1>Modification d'une facture</h1>) || (
+                <h1>Création d'une facture</h1>
+            )}
+            {loading && <FormContentLoader />}
+
+            {!loading && (<form onSubmit={handleSubmit}>
                 <Field
                     name="amount"
                     type="number"
@@ -130,6 +144,7 @@ const InvoicePage = ({ history, match }) => {
                     <Link to="/invoices" className="btn btn-link">Retour aux factures</Link>
                 </div>
             </form>
+            )}
         </>
     );
 }
